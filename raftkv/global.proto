@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package raftkv;
+
+message ServerConf {
+  string ip = 1;  // Default is 127.0.0.1
+  uint32 port = 2;
+}
+
+message Conf {
+  repeated ServerConf servers = 1;
+  float heartbeat_interval = 2;
+  float election_timeout_min = 3;
+  float election_timeout_max = 4;
+}
+
+message Entry {
+  string key = 1;
+  string value = 2;
+  uint32 term = 3;
+};
+
+enum MessageType {
+  MESSAGE_UNKNOWN = 0;
+  MESSAGE_APPEND_ENTRIES = 1;
+  MESSAGE_REQUEST_VOTE = 2;
+
+  // Responses
+  MESSAGE_APPEND_ENTRIES_RESULT = 101;
+  MESSAGE_REQUEST_VOTE_RESULT = 102;
+
+  // For client
+  MESSAGE_SET = 200;
+  MESSAGE_GET = 201;
+  MESSAGE_UNSET = 202;
+
+  MESSAGE_CLIENT_RESPONSE = 300;
+}
+
+message Message {
+  MessageType type = 1;
+  uint32 sender = 2;  // For internal use only
+  uint32 term = 3;
+
+  oneof payload {
+    RequestVote request_vote = 10;
+    RequestVoteResponse request_vote_response = 11;
+
+    ClientRequest client_request = 100;
+  }
+
+  message RequestVote {
+    uint32 last_log_index = 1;
+    uint32 last_log_term = 2;
+  }
+  message RequestVoteResponse {
+    bool vote_granted = 1;
+  }
+
+  message ClientRequest {
+    string key = 1;
+    string value = 2;
+  }
+}

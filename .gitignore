@@ -1,0 +1,7 @@
+*_pb2.py
+*.py[co]
+__pycache__/
+*.swp
+*~
+*.vim
+.mypy_*

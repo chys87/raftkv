@@ -1,0 +1,2 @@
+au FileType python setl cc=80
+au FileType proto,ninja setl et ts=2 sts=2 sw=2 cc=80
